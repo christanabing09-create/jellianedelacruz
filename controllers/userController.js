@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs');
 const { db } = require('../config/db');
 
 // ─── GET /api/users ───────────────────────────────────────────────────────────
@@ -71,17 +70,13 @@ const createUser = async (req, res, next) => {
       });
     }
 
-    // Hash the password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(user_pass, saltRounds);
-
     const result = await db.execute({
       sql: `INSERT INTO users
               (user_login, user_pass, fname, lname, gender, user_level, branch_cd, email, user_activation_key, isActive)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       args: [
         user_login,
-        hashedPassword,
+        user_pass,
         fname,
         lname,
         gender,
@@ -152,14 +147,6 @@ const updateUser = async (req, res, next) => {
       });
     }
 
-    // Hash password only if it changed (not already a bcrypt hash)
-    let finalPassword = user_pass;
-    const isBcryptHash = /^\$2[aby]\$\d{2}\$/.test(user_pass);
-    if (!isBcryptHash) {
-      const saltRounds = 10;
-      finalPassword = await bcrypt.hash(user_pass, saltRounds);
-    }
-
     await db.execute({
       sql: `UPDATE users SET
               user_login = ?,
@@ -175,7 +162,7 @@ const updateUser = async (req, res, next) => {
             WHERE user_id = ?`,
       args: [
         user_login,
-        finalPassword,
+        user_pass,
         fname,
         lname,
         gender,
