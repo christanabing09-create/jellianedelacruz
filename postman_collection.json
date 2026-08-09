@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Backend Turso API - Users",
+    "description": "Complete CRUD API for Users using Node.js, Express, and Turso Cloud Database.\n\n**Base URL (local):** http://localhost:3000\n**Base URL (production):** https://your-project.vercel.app\n\nSet the `base_url` variable in the collection to switch environments.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        },
+        "description": "Check that the API server is running."
+      },
+      "response": [
+        {
+          "name": "API Running",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"Backend API is running.\",\n  \"version\": \"1.0.0\",\n  \"timestamp\": \"2024-01-01T00:00:00.000Z\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Retrieve all users from the database."
+      },
+      "response": [
+        {
+          "name": "Success - All Users",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"Users retrieved successfully.\",\n  \"data\": [\n    {\n      \"user_id\": 1,\n      \"user_login\": \"admin\",\n      \"user_pass\": \"$2a$10$hashedpasswordhere\",\n      \"fname\": \"John\",\n      \"lname\": \"Doe\",\n      \"gender\": \"Male\",\n      \"user_level\": 1,\n      \"branch_cd\": \"A001\",\n      \"email\": \"john@example.com\",\n      \"registered\": \"2024-01-01 00:00:00\",\n      \"user_activation_key\": \"abc123\",\n      \"isActive\": 1\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET User by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"]
+        },
+        "description": "Retrieve a single user by their user_id. Update the `user_id` collection variable to test different users."
+      },
+      "response": [
+        {
+          "name": "Success - User Found",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"User retrieved successfully.\",\n  \"data\": {\n    \"user_id\": 1,\n    \"user_login\": \"admin\",\n    \"user_pass\": \"$2a$10$hashedpasswordhere\",\n    \"fname\": \"John\",\n    \"lname\": \"Doe\",\n    \"gender\": \"Male\",\n    \"user_level\": 1,\n    \"branch_cd\": \"A001\",\n    \"email\": \"john@example.com\",\n    \"registered\": \"2024-01-01 00:00:00\",\n    \"user_activation_key\": \"abc123\",\n    \"isActive\": 1\n  }\n}"
+        },
+        {
+          "name": "Error - User Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "body": "{\n  \"success\": false,\n  \"message\": \"User with ID 99 not found.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_login\": \"admin\",\n  \"user_pass\": \"password123\",\n  \"fname\": \"John\",\n  \"lname\": \"Doe\",\n  \"gender\": \"Male\",\n  \"user_level\": 1,\n  \"branch_cd\": \"A001\",\n  \"email\": \"john@example.com\",\n  \"user_activation_key\": \"abc123\",\n  \"isActive\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users"]
+        },
+        "description": "Create a new user. The password is automatically hashed with bcryptjs before saving to the database."
+      },
+      "response": [
+        {
+          "name": "Success - User Created",
+          "status": "Created",
+          "code": 201,
+          "body": "{\n  \"success\": true,\n  \"message\": \"User created successfully.\",\n  \"data\": {\n    \"user_id\": 1,\n    \"user_login\": \"admin\",\n    \"user_pass\": \"$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy\",\n    \"fname\": \"John\",\n    \"lname\": \"Doe\",\n    \"gender\": \"Male\",\n    \"user_level\": 1,\n    \"branch_cd\": \"A001\",\n    \"email\": \"john@example.com\",\n    \"registered\": \"2024-01-01 00:00:00\",\n    \"user_activation_key\": \"abc123\",\n    \"isActive\": 1\n  }\n}"
+        },
+        {
+          "name": "Error - Missing Fields",
+          "status": "Bad Request",
+          "code": 400,
+          "body": "{\n  \"success\": false,\n  \"message\": \"Missing required fields: fname, lname.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "PUT Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_login\": \"admin_updated\",\n  \"user_pass\": \"newpassword456\",\n  \"fname\": \"Jane\",\n  \"lname\": \"Doe\",\n  \"gender\": \"Female\",\n  \"user_level\": 2,\n  \"branch_cd\": \"B002\",\n  \"email\": \"jane@example.com\",\n  \"user_activation_key\": \"xyz789\",\n  \"isActive\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"]
+        },
+        "description": "Update all fields of an existing user. If a new plain-text password is provided, it will be re-hashed automatically."
+      },
+      "response": [
+        {
+          "name": "Success - User Updated",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"User updated successfully.\",\n  \"data\": {\n    \"user_id\": 1,\n    \"user_login\": \"admin_updated\",\n    \"user_pass\": \"$2a$10$hashedpasswordhere\",\n    \"fname\": \"Jane\",\n    \"lname\": \"Doe\",\n    \"gender\": \"Female\",\n    \"user_level\": 2,\n    \"branch_cd\": \"B002\",\n    \"email\": \"jane@example.com\",\n    \"registered\": \"2024-01-01 00:00:00\",\n    \"user_activation_key\": \"xyz789\",\n    \"isActive\": 1\n  }\n}"
+        },
+        {
+          "name": "Error - User Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "body": "{\n  \"success\": false,\n  \"message\": \"User with ID 99 not found.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "DELETE User",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "{{user_id}}"]
+        },
+        "description": "Permanently delete a user by their user_id."
+      },
+      "response": [
+        {
+          "name": "Success - User Deleted",
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"message\": \"User with ID 1 deleted successfully.\",\n  \"data\": null\n}"
+        },
+        {
+          "name": "Error - User Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "body": "{\n  \"success\": false,\n  \"message\": \"User with ID 99 not found.\"\n}"
+        }
+      ]
+    }
+  ]
+}
